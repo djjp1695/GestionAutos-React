@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plateforme de rendez-vous</title>
+    <!--Inclusion de Jquery, Bootstrap et App.js pour la logique Javascript de l'application-->
+    <script type="text/javascript" src="static/vendor/jquery-4.0.0.min.js"></script>
+    <script type="text/javascript" src="static/vendor/bootstrap.bundle.min.js"></script>
+    <script type="module" src="static/js/app.js"></script>
+    <link rel="stylesheet" href="static/vendor/bootstrap.min.css">
+    <script>
+        ///Passage du code d'erreur si 404 rencontré
+        window.initialStatusCode = {{ initial_status_code | default (200) }};
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-success" data-bs-theme="dark">
+        <div class="container-fluid" id="liens">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link pages" id="voitures" href="/#voitures"></a>
+                </li>
+            </ul>
+            <div class="d-flex ms-auto">
+                <button class="btn-lang btn-en btn btn-outline-light me-2" onclick="app.changerLangue('en')">EN</button>
+                <button class="btn-lang btn-fr btn btn-outline-light me-2" onclick="app.changerLangue('fr')">FR</button>
+                <button class="btn-lang btn-es btn btn-outline-light" onclick="app.changerLangue('es')">ES</button>
+
+            </div>
+        </div>
+    </nav>
+
+    <h1 id="titrePrincipal"></h1>
+    <h2 id="contenuPages"></h2>
+    <div id="content" class="container">
+        <div id="tiles-container" class="row">
+        </div>
+    </div>
+</body>
+
+<script id="card-template-voiture" type="text/x-template">
+    <div class="card voiture-tile" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p>
+                <label class="label-card-model"></label>
+                :
+                <label id="card-modele"></label>
+            </p>
+            <p>
+                <label class="label-card-annee"></label>
+                :
+                <label id="card-annee"></label>
+            </p>
+            <p>
+                <label class="label-card-couleur"></label>
+                :
+                <label id="card-couleur"></label>
+            </p>
+            <p>
+                <label class="label-card-actif"></label>
+                :
+                <label id="card-actif"></label>
+            </p>
+            <button type="button" class="modifier-voiture btn btn-primary"></button>
+            <button type="button" class="actif-voiture btn btn-warning"></button>
+            <button type="button" class="supprimer-voiture btn btn-danger"></button>
+        </div>
+    </div>
+</script>
+<div id="modal-window-voiture" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button id="boutonConfirmer" type="button" class="bouton-confirmer btn btn-primary"></button>
+                <button type="button" class="bouton-annuler btn btn-secondary" data-bs-dismiss="modal"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-window-modification-voiture" class="modal fade" tabindex="-1" aria-labelledby="modalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" class="modification-voiture" id="modalLabelModificationVoiture"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Form Inside Modal -->
+            <form id="updateVoitureForm">
+                <div class="modal-body">
+                    <!-- Marque -->
+                    <div class="mb-3">
+                        <label for="marqueVoitureInput" class="marque-voiture form-label"></label>
+                        <input type="text" class="form-control" id="marqueVoitureInput" required>
+                    </div>
+
+                    <!-- Modèle -->
+                    <div class="mb-3">
+                        <label for="modeleVoitureInput" class="modele-voiture form-label"></label>
+                        <input type="text" class="form-control" id="modeleVoitureInput" required>
+                    </div>
+
+                    <!-- Année -->
+                    <div class="mb-3">
+                        <label for="anneeVoitureInput" class="annee-voiture form-label"></label>
+                        <input type="number" class="form-control" id="anneeVoitureInput" required>
+                    </div>
+
+                    <!-- Couleur -->
+                    <div class="mb-3">
+                        <label for="couleurVoitureInput" class="couleur-voiture form-label"></label>
+                        <input type="text" class="form-control" id="couleurVoitureInput" required>
+                    </div>
+
+                    <!-- Actif Checkbox -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="actifVoiture">
+                        <label class="form-check-label" id="labelVoitureActive" for="actifVoiture"></label>
+                    </div>
+
+                    <!-- Submit Button -->
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="submit" id="boutonConfirmer" class="bouton-confirmer btn btn-primary"></button>
+                    <button type="button" class="bouton-annuler btn btn-secondary" data-bs-dismiss="modal"></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</html>
