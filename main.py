@@ -5,6 +5,7 @@ et afficher un front-end en HTML avec Javascript et Jquery
 Date de création : 8 février 2026
 Date de modification : 16 février 2026
 """
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi import FastAPI, HTTPException, Request
@@ -31,6 +32,15 @@ dbContext = DbContext(DB_FILENAME)
 #Initialisation de FastAPI
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ou "*" pour tout autoriser en dev
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST, PUT, DELETE
+    allow_headers=["*"]   # Content-Type, Authorization...
+)
+
+
 #Inclusion du router pour les ressources et les voitures
 app.include_router(VoitureRouter(VoitureService(dbContext), API_LINK).router)
 app.include_router(RessourcesRouter(RessourceService(RESSOURCE_FILENAME), API_LINK).router)
@@ -41,7 +51,6 @@ app.mount("/static", StaticFiles(directory="www/static"), name="static")
 
 #Lecture des fichiers HTML
 templates = Jinja2Templates(directory="www")
-
 
 #Retourne index.html pour la fonction GET du root
 @app.get("/")
