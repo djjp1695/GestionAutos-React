@@ -10,7 +10,7 @@ export default class RessourcesService {
     //Récupére les ressources multilingues depuis l'API rest
     async fetchRessources() {
         try {
-            const response = await fetch(`${this.lienAPI}/Ressources`,
+            const response = await fetch(`${this.lienAPI}/Ressources/`,
                 {
                     headers: {
                         "Authorization": `Bearer ${await this.authService.getToken()}`

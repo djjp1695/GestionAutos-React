@@ -2,18 +2,18 @@
 export default class VoitureService {
 
     //Passage du lien de l'API par défaut
-    constructor(lienAPI, token) {
+    constructor(lienAPI, authService) {
         this.lienAPI = lienAPI;
-        this.token = token;
+        this.authService = authService;
     }
 
     //Retourne une liste de toutes les voitures
     async getAll() {
         try {
-            const response = await fetch(`${this.lienAPI}/Voitures`,
+            const response = await fetch(`${this.lienAPI}/Voitures/`,
                 {
                     headers: {
-                        "Authorization": `Bearer ${this.token}`
+                        "Authorization": `Bearer ${await this.authService.getToken()}`
                     }
                 }
             )
@@ -34,7 +34,7 @@ export default class VoitureService {
                 {
                     method: 'PUT',
                     headers: {
-                        "Authorization": `Bearer ${await window.app.getToken()}`
+                        "Authorization": `Bearer ${await this.authService.getToken()}`
                     }
                 })
             if (!response.ok)
@@ -57,7 +57,7 @@ export default class VoitureService {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${await window.app.getToken()}`
+                        'Authorization': `Bearer ${await this.authService.getToken()}`
                     },
                     body: JSON.stringify({
                         marque: marque,
@@ -81,13 +81,14 @@ export default class VoitureService {
 
     //Ajoute une nouvelle voiture avec les valeurs saisies
     async ajouterVoiture(marque, modele, annee, couleur, actif) {
+        console.log(marque, modele, annee, couleur, actif);
         try {
             const response = await fetch(`${this.lienAPI}/Voitures/`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${await window.app.getToken()}`
+                        'Authorization': `Bearer ${await this.authService.getToken()}`
                     },
                     body: JSON.stringify({
                         marque: marque,
@@ -98,6 +99,7 @@ export default class VoitureService {
                     })
                 });
             if (!response.ok)
+
                 console.error(response.status);
             else {
                 const data = await response.json();
@@ -105,6 +107,7 @@ export default class VoitureService {
             }
         }
         catch (err) {
+            alert(err);
             console.error(err);
         }
     }
@@ -116,7 +119,7 @@ export default class VoitureService {
                 {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${await window.app.getToken()}`
+                        'Authorization': `Bearer ${await this.authService.getToken()}`
                     }
                 });
             if (!response.ok)

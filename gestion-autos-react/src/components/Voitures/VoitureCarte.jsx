@@ -1,44 +1,102 @@
+import { useState } from "react";
+import VoitureActifInactifSuppression from './Modals/VoitureActifInactifSuppression'
+import VoitureModalAjoutModification from "./Modals/VoitureModalAjoutModification";
 
-function CardVoiture({ voiture, lang, RessourcesService }) {
+function CardVoiture({ voiture, GetRessource, Supprimer, ModificationActiveInactive }) {
+    const [showModalActifInactifSuppression, setShowModalActifInactifSuppression] = useState(false);
+    const [estSuppression, setEstSuppression] = useState(false);
+    const [showModalModification, setShowModalModification] = useState(false);
+
+
+    const handleSupprimer = async (id) => {
+        const result = await Supprimer(id);
+        if (!result)
+            return "Erreur lors de la suppresion";
+        else
+            setShowModalActifInactifSuppression(false);
+    }
+
+    const handleActiveInactive = async (id, actif) => {
+        const result = await ModificationActiveInactive(id, actif);
+        if (!result)
+            return "Erreur lors de la modification du statut.";
+        else
+            setShowModalActifInactifSuppression(false);
+    }
+
     return (
-        <div className="card voiture-tile" style={{ width: '18rem' }}>
-            <div className="card-body">
-                <h5 className="card-title">{voiture.marque}</h5>
-                <p>
-                    <label className="label-card-model">{RessourcesService.getRessource(lang, 'modeleVoiture')} </label>
-                    {' '}: {' '}
-                    <label id="card-modele">{voiture.modele} </label>
-                </p>
-                <p>
-                    <label className="label-card-annee">{RessourcesService.getRessource(lang, 'anneeVoiture')}</label>
-                    {' '}: {' '}
-                    <label id="card-annee">{voiture.annee}</label>
-                </p>
-                <p>
-                    <label className="label-card-couleur">{RessourcesService.getRessource(lang, 'couleurVoiture')}</label>
-                    {' '}: {' '}
-                    <label id="card-couleur">{voiture.couleur}</label>
-                </p>
-                <p>
-                    <label className="label-card-actif">{RessourcesService.getRessource(lang, 'actifVoiture')}</label>
-                    {' '}: {' '}
-                    <label id="card-actif" className={voiture.actif ? 'card-actif-actif' : 'card-actif-inactif'}>
+        <>
+            <div className="card voiture-tile" style={{ width: '18rem' }}>
+                <div className="card-body">
+                    <h5 className="card-title">{voiture.marque}</h5>
+                    <p>
+                        <label className="label-card-model">{GetRessource('modeleVoiture')} </label>
+                        {' '}: {' '}
+                        <label id="card-modele">{voiture.modele} </label>
+                    </p>
+                    <p>
+                        <label className="label-card-annee">{GetRessource('anneeVoiture')}</label>
+                        {' '}: {' '}
+                        <label id="card-annee">{voiture.annee}</label>
+                    </p>
+                    <p>
+                        <label className="label-card-couleur">{GetRessource('couleurVoiture')}</label>
+                        {' '}: {' '}
+                        <label id="card-couleur">{voiture.couleur}</label>
+                    </p>
+                    <p>
+                        <label className="label-card-actif">{GetRessource('actifVoiture')}</label>
+                        {' '}: {' '}
+                        <label id="card-actif" className={voiture.actif ? 'card-actif-actif' : 'card-actif-inactif'}>
+                            {
+                                voiture.actif ? GetRessource('actifVoiture') : GetRessource('voitureInactive')
+                            }
+                        </label>
+                    </p>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={() => { setShowModalModification(true) }}
+                    >
+                        {GetRessource('boutonModifier')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-warning"
+                        onClick={() => { setEstSuppression(false); setShowModalActifInactifSuppression(true) }}>
                         {
-                            voiture.actif ? RessourcesService.getRessource(lang, 'actifVoiture') : RessourcesService.getRessource(lang, 'voitureInactive')
+                            voiture.actif
+                                ? GetRessource('rendreInactive')
+                                : GetRessource('rendreActive')
                         }
-                    </label>
-                </p>
-                <button type="button" className="btn btn-primary"  >{RessourcesService.getRessource(lang, 'boutonModifier')}</button>
-                <button type="button" className="btn btn-warning">
-                    {
-                        voiture.actif
-                            ? RessourcesService.getRessource(lang, 'rendreInactive')
-                            : RessourcesService.getRessource(lang, 'rendreActive')
-                    }
-                </button>
-                <button type="button" className="supprimer-voiture btn btn-danger">{RessourcesService.getRessource(lang, 'boutonSupprimer')}</button>
-            </div>
-        </div>
+                    </button>
+                    <button
+                        type="button"
+                        className="supprimer-voiture btn btn-danger"
+                        onClick={() => { setEstSuppression(true); setShowModalActifInactifSuppression(true) }}
+                    >{GetRessource('boutonSupprimer')}</button>
+                </div>
+            </div >
+            {
+                showModalActifInactifSuppression &&
+                (
+                    <VoitureActifInactifSuppression
+                        Voiture={voiture}
+                        GetRessource={GetRessource}
+                        Suppression={estSuppression}
+                        Supprimer={handleSupprimer}
+                        ModificationActiveInactive={handleActiveInactive}
+                        OnCancel={() => setShowModalActifInactifSuppression(false)}
+                    />
+                )
+            }
+            {
+                showModalModification &&
+                (
+                    <VoitureModalAjoutModification OnClose={() => setShowModalModification(false)} Voiture={voiture} GetRessource={GetRessource} />
+                )
+            }
+        </>
     )
 }
 export default CardVoiture;

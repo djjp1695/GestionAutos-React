@@ -9,7 +9,7 @@ import RessourcesService from "./Services/RessourcesServices"
 import VoiturePage from "./components/Voitures/VoiturePage";
 
 
-function App() {
+const App = () => {
   const titrePage = 'titrePrincipal';
   const lienAPI = "http://localhost:8000/api";
   const user = 'app';
@@ -21,7 +21,7 @@ function App() {
   const [authService, setAuthService] = useState(null);
 
   useEffect(() => {
-    async function loadApp() {
+    const loadApp = async () => {
       const authService = new AuthService(lienAPI, user, password);
       await authService.getToken();
       setAuthService(authService);
@@ -33,21 +33,26 @@ function App() {
     loadApp();
   }, []);
 
-  function ChangerLangue(nouvelleLangue) {
+  const ChangerLangue = (nouvelleLangue) => {
     setLang(nouvelleLangue);
   }
 
-  async function GetToken() {
+  const GetToken = async () => {
     return await authService.getToken();
+  }
+
+
+  const GetRessource = (ressource) => {
+    return ressourcesService.getRessource(lang, ressource);
   }
 
   return (
     ressourcesService
     &&
     <>
-      <Menu ChangerLangue={ChangerLangue} lang={lang} RessourcesService={ressourcesService} />
-      <h1 id={titrePage}>{ressourcesService.getRessource(lang, titrePage)}</h1>
-      <VoiturePage lang={lang} RessourcesService={ressourcesService} lienAPI={lienAPI} GetToken={GetToken} />
+      <Menu ChangerLangue={ChangerLangue} lang={lang} GetRessource={GetRessource} />
+      <h1 id={titrePage}>{GetRessource(titrePage)}</h1>
+      <VoiturePage authService={authService} lang={lang} GetRessource={GetRessource} lienAPI={lienAPI} GetToken={GetToken} />
     </>)
 
 }

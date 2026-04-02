@@ -1,11 +1,11 @@
 import { Pages, Langue } from "../Constantes";
 
-function Menu({ ChangerLangue, lang, RessourcesService }) {
+function Menu({ ChangerLangue, lang, GetRessource }) {
     return (<nav className="navbar navbar-expand-lg bg-success" data-bs-theme="dark">
         <div className="container-fluid" id="liens">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                 <li className="nav-item">
-                    <a className="nav-link pages" id={Pages.VOITURES} href="/#voitures">{RessourcesService.getRessource(lang, Pages.VOITURES)}</a>
+                    <a className="nav-link pages" id={Pages.VOITURES} href="/#voitures">{GetRessource(Pages.VOITURES)}</a>
                 </li>
             </ul>
             <div className="d-flex ms-auto">

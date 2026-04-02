@@ -6,7 +6,7 @@ export default class AuthService {
     }
 
     async fetchToken() {
-        let response = await fetch(`${this.lienAPI}/Login`,
+        let response = await fetch(`${this.lienAPI}/Login/`,
             {
                 method: 'POST',
                 headers: {
