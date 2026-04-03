@@ -3,10 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './style.css'
 import { useEffect, useState } from "react";
-import { Langue } from "./Constantes";
+import { Langue, Pages } from "./Constantes";
 import AuthService from "./Services/AuthService"
 import RessourcesService from "./Services/RessourcesServices"
 import VoiturePage from "./components/Voitures/VoiturePage";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Page404 from "./components/404";
 
 
 const App = () => {
@@ -40,20 +42,33 @@ const App = () => {
   const GetToken = async () => {
     return await authService.getToken();
   }
-
-
   const GetRessource = (ressource) => {
     return ressourcesService.getRessource(lang, ressource);
   }
 
+  const pageVoitures = (
+    <VoiturePage
+      authService={authService}
+      lang={lang}
+      GetRessource={GetRessource}
+      lienAPI={lienAPI}
+      GetToken={GetToken}
+    />
+  );
+  
   return (
     ressourcesService
     &&
     <>
-      <Menu ChangerLangue={ChangerLangue} lang={lang} GetRessource={GetRessource} />
-      <h1 id={titrePage}>{GetRessource(titrePage)}</h1>
-      <VoiturePage authService={authService} lang={lang} GetRessource={GetRessource} lienAPI={lienAPI} GetToken={GetToken} />
-    </>)
-
+      <BrowserRouter>
+        <Menu ChangerLangue={ChangerLangue} lang={lang} GetRessource={GetRessource} />
+        <h1 id={titrePage}>{GetRessource(titrePage)}</h1>
+        <Routes>
+          <Route path='/' element={pageVoitures} />
+          <Route path='*' element={<Page404 GetRessource={GetRessource} />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  )
 }
 export default App;
