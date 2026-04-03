@@ -1,5 +1,5 @@
 # GestionAutos
-Plateforme de gestion automobile en FastAPI avec front-end Javascript (Jquery)
+Plateforme de gestion automobile en FastAPI avec React
 
 ## Prérequis
 
@@ -7,7 +7,7 @@ Plateforme de gestion automobile en FastAPI avec front-end Javascript (Jquery)
 - FastAPI
 - SQLModel
 - aiosqlite (Pilote pour BD SQLite)
-- Jquery et Bootstrap, utilisé dans le front-end Web
+- React et Bootstrap, utilisé dans le front-end Web
 - PyJWT
 
 > Il est recommandé d’utiliser un environnement virtuel pour gérer les dépendances.
