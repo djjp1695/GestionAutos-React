@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
-  /*build: {
-    outDir: '../wwww-react'
-  }*/
+  build: {
+    outDir: '../www-react'
+  }
 })

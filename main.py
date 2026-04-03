@@ -47,10 +47,12 @@ app.include_router(RessourcesRouter(RessourceService(RESSOURCE_FILENAME), API_LI
 app.include_router(LoginRouter(API_LINK).router)
 
 #Ajout des fichiers "Static" au serveur web Uvicorn
-app.mount("/static", StaticFiles(directory="www/static"), name="static")
+#app.mount("/static", StaticFiles(directory="www/static"), name="static")
+app.mount("/", StaticFiles(directory="www-react"), name='root')
 
 #Lecture des fichiers HTML
-templates = Jinja2Templates(directory="www")
+#templates = Jinja2Templates(directory="www")
+templates = Jinja2Templates(directory="www-react")
 
 #Retourne index.html pour la fonction GET du root
 @app.get("/")
