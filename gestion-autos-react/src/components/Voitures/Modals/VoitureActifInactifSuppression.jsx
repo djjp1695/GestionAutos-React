@@ -1,5 +1,5 @@
 import { useState } from "react";
-function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Supprimer, OnCancel, ModificationActiveInactive }) {
+function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Supprimer, OnClose, ModificationActiveInactive }) {
     const [erreur, setErreur] = useState("");
     return (
         <div id="modal-window-voiture" className="modal fade show d-block" tabIndex="-1">
@@ -15,7 +15,7 @@ function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Su
                             }
 
                         </h5>
-                        <button type="button" className="btn-close" onClick={OnCancel}></button>
+                        <button type="button" className="btn-close" onClick={OnClose}></button>
                     </div>
                     {!erreur ?
                         <div className="modal-body">
@@ -43,18 +43,14 @@ function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Su
                                 type="button"
                                 className="btn btn-primary"
                                 onClick={async () => {
-                                    let result;
-                                    if (Suppression)
-                                        result = await Supprimer(Voiture.id)
-                                    else
-                                        result = await ModificationActiveInactive(Voiture.id, !Voiture.actif);
-                                    if (result != null)
-                                        setErreur(result);
+                                    Suppression
+                                        ? !(await Supprimer(Voiture.id)) ? setErreur("Erreur lors de la suppression") : OnClose()
+                                        : !(await ModificationActiveInactive(Voiture.id, !Voiture.actif)) ? setErreur("Erreur lors du changement de statut") : OnClose()
                                 }}>
                                 {GetRessource('boutonConfirmer')}
                             </button>
                         )}
-                        <button type="button" className=" btn btn-secondary" onClick={OnCancel}>{!erreur ? GetRessource('boutonAnnuler') : 'Ok'}</button>
+                        <button type="button" className=" btn btn-secondary" onClick={OnClose}>{!erreur ? GetRessource('boutonAnnuler') : 'Ok'}</button>
                     </div>
                 </div>
             </div>

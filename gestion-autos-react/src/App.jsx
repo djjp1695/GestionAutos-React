@@ -11,9 +11,9 @@ import VoiturePage from "./components/Voitures/VoiturePage";
 
 const App = () => {
   const titrePage = 'titrePrincipal';
-  const lienAPI = "http://localhost:8000/api";
-  const user = 'app';
-  const password = 'appWeb';
+  const lienAPI = import.meta.env.VITE_API;
+  const user = import.meta.env.VITE_API_USER;
+  const password = import.meta.env.VITE_API_PASSWORD;
 
   //Langue par défaut = Français
   const [lang, setLang] = useState(Langue.FR);

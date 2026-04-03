@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVoiture }) => {
+const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVoiture, ModificationVoiture }) => {
     const [marque, setMarque] = useState('');
     const [modele, setModele] = useState('');
     const [annee, setAnnee] = useState('');
@@ -28,7 +28,19 @@ const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVo
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={OnClose}></button>
                     </div>
 
-                    <form id="updateVoitureForm">
+                    <form
+                        id="updateVoitureForm"
+                        onSubmit={
+                            async (e) => {
+                                e.preventDefault();
+                                if (Voiture == null)
+                                    await AjoutVoiture(marque, modele, annee, couleur, actif);
+                                else
+                                    await ModificationVoiture(Voiture.id, marque, modele, annee, couleur, actif)
+                                OnClose();
+                            }
+                        }
+                    >
                         <div className="modal-body">
                             <div className="mb-3">
                                 <label htmlFor="marqueVoitureInput" className="marque-voiture form-label">{GetRessource('marqueVoiture')}</label>
@@ -77,13 +89,6 @@ const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVo
                                 type="submit"
                                 id="boutonConfirmer"
                                 className="bouton-confirmer btn btn-primary"
-                                onClick={
-                                    async () => {
-                                        if (Voiture == null) {
-                                            await AjoutVoiture(marque, modele, annee, couleur, actif)
-                                        }
-                                    }
-                                }
                             >{GetRessource('boutonConfirmer')}
                             </button>
                             <button type="button" className="bouton-annuler btn btn-secondary" data-bs-dismiss="modal" onClick={OnClose}>{GetRessource('boutonAnnuler')}</button>

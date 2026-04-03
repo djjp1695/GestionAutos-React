@@ -2,27 +2,10 @@ import { useState } from "react";
 import VoitureActifInactifSuppression from './Modals/VoitureActifInactifSuppression'
 import VoitureModalAjoutModification from "./Modals/VoitureModalAjoutModification";
 
-function CardVoiture({ voiture, GetRessource, Supprimer, ModificationActiveInactive }) {
+function CardVoiture({ voiture, GetRessource, Supprimer, ModificationActiveInactive, ModifierVoiture }) {
     const [showModalActifInactifSuppression, setShowModalActifInactifSuppression] = useState(false);
     const [estSuppression, setEstSuppression] = useState(false);
     const [showModalModification, setShowModalModification] = useState(false);
-
-
-    const handleSupprimer = async (id) => {
-        const result = await Supprimer(id);
-        if (!result)
-            return "Erreur lors de la suppresion";
-        else
-            setShowModalActifInactifSuppression(false);
-    }
-
-    const handleActiveInactive = async (id, actif) => {
-        const result = await ModificationActiveInactive(id, actif);
-        if (!result)
-            return "Erreur lors de la modification du statut.";
-        else
-            setShowModalActifInactifSuppression(false);
-    }
 
     return (
         <>
@@ -84,16 +67,16 @@ function CardVoiture({ voiture, GetRessource, Supprimer, ModificationActiveInact
                         Voiture={voiture}
                         GetRessource={GetRessource}
                         Suppression={estSuppression}
-                        Supprimer={handleSupprimer}
-                        ModificationActiveInactive={handleActiveInactive}
-                        OnCancel={() => setShowModalActifInactifSuppression(false)}
+                        Supprimer={Supprimer}
+                        ModificationActiveInactive={ModificationActiveInactive}
+                        OnClose={() => setShowModalActifInactifSuppression(false)}
                     />
                 )
             }
             {
                 showModalModification &&
                 (
-                    <VoitureModalAjoutModification OnClose={() => setShowModalModification(false)} Voiture={voiture} GetRessource={GetRessource} />
+                    <VoitureModalAjoutModification ModificationVoiture={ModifierVoiture} OnClose={() => setShowModalModification(false)} Voiture={voiture} GetRessource={GetRessource} />
                 )
             }
         </>
