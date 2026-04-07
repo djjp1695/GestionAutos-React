@@ -1,8 +1,13 @@
 //Toutes les fonctions de ce service respecte les normes REST
 
+import AuthService from "./AuthService";
+
 export default class RessourcesService {
+    private lienAPI: string;
+    private authService: AuthService;
+    private ressources: any = {};
     //Passage du lien de l'API par défaut
-    constructor(lienAPI, authService) {
+    constructor(lienAPI: string, authService: AuthService) {
         this.lienAPI = lienAPI;
         this.authService = authService;
     }
@@ -32,7 +37,8 @@ export default class RessourcesService {
 
     //Retourne la valeur de la ressource 
     // selon le nom de ressource et la langue de l'application
-    getRessource(lang, ressource) {
+    getRessource(lang: string, ressource: string) {
+        console.log(this.ressources);
         return this.ressources[lang][0][ressource];
     }
 

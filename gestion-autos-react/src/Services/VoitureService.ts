@@ -1,8 +1,12 @@
+import AuthService from "./AuthService";
+
 //Toutes les fonctions de ce service respecte les normes REST
 export default class VoitureService {
 
+    private lienAPI: string;
+    private authService: AuthService;
     //Passage du lien de l'API par défaut
-    constructor(lienAPI, authService) {
+    constructor(lienAPI: string, authService: AuthService) {
         this.lienAPI = lienAPI;
         this.authService = authService;
     }
@@ -28,7 +32,7 @@ export default class VoitureService {
     }
 
     //Mets la voiture actif, inactif, selon son ID
-    async updateVoitureStatus(id, actif) {
+    async updateVoitureStatus(id: number, actif: boolean) {
         try {
             const response = await fetch(`${this.lienAPI}/Voitures/${id}/status?actif=${actif}`,
                 {
@@ -50,7 +54,7 @@ export default class VoitureService {
     }
 
     //Mets à jour les valeurs de la voiture, selon son ID
-    async updateVoiture(id, marque, modele, annee, couleur, actif) {
+    async updateVoiture(id: number, marque: string, modele: string, annee: number, couleur: string, actif: boolean) {
         try {
             const response = await fetch(`${this.lienAPI}/Voitures/${id}`,
                 {
@@ -80,7 +84,7 @@ export default class VoitureService {
     }
 
     //Ajoute une nouvelle voiture avec les valeurs saisies
-    async ajouterVoiture(marque, modele, annee, couleur, actif) {
+    async ajouterVoiture(marque: string, modele: string, annee: number, couleur: string, actif: boolean) {
         console.log(marque, modele, annee, couleur, actif);
         try {
             const response = await fetch(`${this.lienAPI}/Voitures/`,
@@ -113,7 +117,7 @@ export default class VoitureService {
     }
 
     //Supprime un voiture selon son ID
-    async supprimerVoiture(id) {
+    async supprimerVoiture(id: number) {
         try {
             const response = await fetch(`${this.lienAPI}/Voitures/${id}`,
                 {

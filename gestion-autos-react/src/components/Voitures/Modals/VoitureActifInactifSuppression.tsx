@@ -1,8 +1,17 @@
 import { useState } from "react";
-function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Supprimer, OnClose, ModificationActiveInactive }) {
-    const [erreur, setErreur] = useState("");
+
+interface VoitureActifInactifSuppressionProps {
+    Suppression: boolean,
+    Voiture: Voiture,
+    GetRessource: (ressource: string) => string,
+    Supprimer: (id: number) => Promise<boolean>,
+    OnClose: () => void,
+    ModificationActiveInactive: (id: number, status: boolean) => Promise<boolean>
+}
+function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Supprimer, OnClose, ModificationActiveInactive }: VoitureActifInactifSuppressionProps) {
+    const [erreur, setErreur] = useState<string>("");
     return (
-        <div id="modal-window-voiture" className="modal fade show d-block" tabIndex="-1">
+        <div id="modal-window-voiture" className="modal fade show d-block" tabIndex={-1}>
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -44,8 +53,8 @@ function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Su
                                 className="btn btn-primary"
                                 onClick={async () => {
                                     Suppression
-                                        ? !(await Supprimer(Voiture.id)) ? setErreur("Erreur lors de la suppression") : OnClose()
-                                        : !(await ModificationActiveInactive(Voiture.id, !Voiture.actif)) ? setErreur("Erreur lors du changement de statut") : OnClose()
+                                        ? !(await Supprimer(Voiture.id!)) ? setErreur("Erreur lors de la suppression") : OnClose()
+                                        : !(await ModificationActiveInactive(Voiture.id!, !Voiture.actif)) ? setErreur("Erreur lors du changement de statut") : OnClose()
                                 }}>
                                 {GetRessource('boutonConfirmer')}
                             </button>

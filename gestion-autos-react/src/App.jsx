@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './style.css'
 import { useEffect, useState } from "react";
-import { Langue, Pages } from "./Constantes";
+import { Langue } from "./Constantes";
 import AuthService from "./Services/AuthService"
 import RessourcesService from "./Services/RessourcesServices"
 import VoiturePage from "./components/Voitures/VoiturePage";
@@ -55,7 +55,7 @@ const App = () => {
       GetToken={GetToken}
     />
   );
-  
+
   return (
     ressourcesService
     &&

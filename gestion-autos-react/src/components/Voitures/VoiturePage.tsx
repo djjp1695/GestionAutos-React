@@ -1,12 +1,19 @@
 import VoitureService from '../../Services/VoitureService'
 import VoitureCarte from './VoitureCarte';
-import VoitureModalAjoutModification from '../Voitures/Modals/VoitureModalAjoutModification'
 import { useEffect, useState } from "react";
+import AuthService from '../../Services/AuthService';
+import VoitureModalAjoutModification from './Modals/VoitureModalAjoutModification';
 
-function VoiturePage({ authService, GetRessource, lienAPI }) {
-    const [voitures, setVoitures] = useState([]);
-    const [voitureService, setVoitureService] = useState(null);
-    const [showAjoutModification, setShowAjoutModification] = useState(false);
+interface VoiturePageProps {
+    authService: AuthService,
+    GetRessource: (ressource: string) => string,
+    lienAPI: string
+}
+
+function VoiturePage({ authService, GetRessource, lienAPI }: VoiturePageProps) {
+    const [voitures, setVoitures] = useState<Voiture[]>([]);
+    const [voitureService, setVoitureService] = useState<VoitureService | null>(null);
+    const [showAjoutModification, setShowAjoutModification] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -18,15 +25,15 @@ function VoiturePage({ authService, GetRessource, lienAPI }) {
         fetchData();
     }, []);
 
-    const supprimerVoiture = async (id) => {
-        const result = await voitureService.supprimerVoiture(id);
+    const supprimerVoiture = async (id: number): Promise<boolean> => {
+        const result = await voitureService!.supprimerVoiture(id);
         if (result)
             setVoitures(voitures.filter(v => v.id !== id));
         return result != undefined;
     }
 
-    const modifierActiveInactive = async (id, status) => {
-        const result = await voitureService.updateVoitureStatus(id, status);
+    const modifierActiveInactive = async (id: number, status: boolean): Promise<boolean> => {
+        const result = await voitureService!.updateVoitureStatus(id, status);
         if (result) {
             let voituresModifiees = voitures.map(v => {
                 if (v.id == id)
@@ -38,8 +45,8 @@ function VoiturePage({ authService, GetRessource, lienAPI }) {
         return result !== undefined;
     }
 
-    const modifierVoiture = async (id, marque, modele, annee, couleur, actif) => {
-        const result = await voitureService.updateVoiture(id, marque, modele, annee, couleur, actif);
+    const modifierVoiture = async (id: number, marque: string, modele: string, annee: number, couleur: string, actif: boolean): Promise<boolean> => {
+        const result = await voitureService!.updateVoiture(id, marque, modele, annee, couleur, actif);
         if (result) {
             let voituresModifiees = voitures.map(v => {
                 if (v.id == id) {
@@ -52,13 +59,13 @@ function VoiturePage({ authService, GetRessource, lienAPI }) {
                 return v;
             });
             setVoitures(voituresModifiees);
-            return result !== undefined;
         }
+        return result !== undefined;
     }
 
-    const ajouterVoiture = async (marque, modele, annee, couleur, actif) => {
+    const ajouterVoiture = async (marque: string, modele: string, annee: number, couleur: string, actif: boolean): Promise<boolean> => {
         console.log(voitureService);
-        const result = await voitureService.ajouterVoiture(marque, modele, annee, couleur, actif);
+        const result = await voitureService!.ajouterVoiture(marque, modele, annee, couleur, actif);
         if (result) {
             setVoitures(voitures => [...voitures, result]); // Update the state with the modified list of cars
             setShowAjoutModification(false);

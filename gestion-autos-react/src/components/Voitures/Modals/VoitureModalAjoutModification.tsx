@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react";
 
-const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVoiture, ModificationVoiture }) => {
-    const [marque, setMarque] = useState('');
-    const [modele, setModele] = useState('');
-    const [annee, setAnnee] = useState('');
-    const [couleur, setCouleur] = useState('');
-    const [actif, setActif] = useState(false);
+interface VoitureModalAjoutModificationProps {
+    GetRessource: (key: string) => string;
+    OnClose: () => void;
+    Voiture?: Voiture | null;
+    AjoutVoiture?: (marque: string, modele: string, annee: number, couleur: string, actif: boolean) => Promise<boolean>;
+    ModificationVoiture?: (id: number, marque: string, modele: string, annee: number, couleur: string, actif: boolean) => Promise<boolean>;
+
+}
+
+const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVoiture, ModificationVoiture }: VoitureModalAjoutModificationProps) => {
+    const [marque, setMarque] = useState<string>('');
+    const [modele, setModele] = useState<string>('');
+    const [annee, setAnnee] = useState<number>(0);
+    const [couleur, setCouleur] = useState<string>('');
+    const [actif, setActif] = useState<boolean>(false);
 
     useEffect(() => {
         if (Voiture) {
             setMarque(Voiture.marque || '');
             setModele(Voiture.modele || '');
-            setAnnee(Voiture.annee || '');
+            setAnnee(Voiture.annee || 0);
             setCouleur(Voiture.couleur || '');
             setActif(Voiture.actif || false);
         }
     }, [Voiture]);
 
     return (
-        <div id="modal-window-modification-voiture" className="modal fade show d-block" tabIndex="-1" aria-labelledby="modalLabel">
+        <div id="modal-window-modification-voiture" className="modal fade show d-block" tabIndex={-1} aria-labelledby="modalLabel">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -36,7 +45,7 @@ const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVo
                                 if (Voiture == null)
                                     await AjoutVoiture(marque, modele, annee, couleur, actif);
                                 else
-                                    await ModificationVoiture(Voiture.id, marque, modele, annee, couleur, actif)
+                                    await ModificationVoiture(Voiture.id!, marque, modele, annee, couleur, actif)
                                 OnClose();
                             }
                         }
@@ -64,7 +73,7 @@ const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVo
                                 <input type="number" className="form-control" id="anneeVoitureInput" required
                                     placeholder={GetRessource('validationAnnee')}
                                     value={annee}
-                                    onChange={(e) => { setAnnee(e.target.value) }} />
+                                    onChange={(e) => { setAnnee(Number(e.target.value)) }} />
                             </div>
 
                             <div className="mb-3">

@@ -1,6 +1,10 @@
 import { Link } from "react-router-dom";
-import 'bootstrap-icons/font/bootstrap-icons.css'
-const Page404 = ({ GetRessource }) => {
+
+interface Page404Props {
+    GetRessource: (ressource: string) => string
+}
+
+const Page404 = ({ GetRessource } : Page404Props) => {
     return (
         <>
             <h1 className="text-center display-4">404</h1>

@@ -1,30 +1,36 @@
 export default class AuthService {
-    constructor(lienAPI, username, password) {
+    private lienAPI: string;
+    private username: string;
+    private password: string;
+
+    constructor(lienAPI: string, username: string, password: string) {
         this.lienAPI = lienAPI;
         this.username = username;
         this.password = password;
     }
 
     async fetchToken() {
-        let response = await fetch(`${this.lienAPI}/Login/`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username: this.username, password: this.password })
+        try {
+            let response = await fetch(`${this.lienAPI}/Login/`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username: this.username, password: this.password })
 
-            })
-        if (!response.ok)
-            console.error(response.status);
-        else {
-            const data = await response.json();
-            return data.token;
+                })
+            if (!response.ok)
+                console.error(response.status);
+            else {
+                const data = await response.json();
+                return data.token;
+            }
         }
-    }
-    catch(err) {
-        console.error(err);
-        return null;
+        catch (err) {
+            console.error(err);
+            return null;
+        }
     }
 
     async getToken() {
@@ -59,7 +65,7 @@ export default class AuthService {
         return token;
     }
 
-    decodeToken(token) {
+    decodeToken(token: string) {
         var base64URL = token.split('.')[1];
         if (!base64URL) return null;
         var base64 = base64URL.replace(/-/g, '+').replace(/_/g, '/');
