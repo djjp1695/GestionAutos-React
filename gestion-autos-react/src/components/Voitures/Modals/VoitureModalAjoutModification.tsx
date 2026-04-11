@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ajouterFonctionEscape } from "../../../Util";
 
 interface VoitureModalAjoutModificationProps {
     GetRessource: (key: string) => string;
@@ -25,6 +26,10 @@ const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVo
             setActif(Voiture.actif || false);
         }
     }, [Voiture]);
+
+    useEffect(() => {
+        ajouterFonctionEscape(OnClose);
+    }, [OnClose])
 
     return (
         <div id="modal-window-modification-voiture" className="modal fade show d-block" tabIndex={-1} aria-labelledby="modalLabel">

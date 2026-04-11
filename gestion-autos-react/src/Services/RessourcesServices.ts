@@ -38,7 +38,6 @@ export default class RessourcesService {
     //Retourne la valeur de la ressource 
     // selon le nom de ressource et la langue de l'application
     getRessource(lang: string, ressource: string) {
-        console.log(this.ressources);
         return this.ressources[lang][0][ressource];
     }
 

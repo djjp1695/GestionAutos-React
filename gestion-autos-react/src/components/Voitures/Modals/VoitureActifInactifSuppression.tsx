@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ajouterFonctionEscape } from "../../../Util";
 
 interface VoitureActifInactifSuppressionProps {
     Suppression: boolean,
@@ -10,6 +11,11 @@ interface VoitureActifInactifSuppressionProps {
 }
 function VoitureActifInactifSuppression({ Suppression, Voiture, GetRessource, Supprimer, OnClose, ModificationActiveInactive }: VoitureActifInactifSuppressionProps) {
     const [erreur, setErreur] = useState<string>("");
+
+    useEffect(() => {
+        ajouterFonctionEscape(OnClose);
+    }, [OnClose]);
+
     return (
         <div id="modal-window-voiture" className="modal fade show d-block" tabIndex={-1}>
             <div className="modal-dialog">
