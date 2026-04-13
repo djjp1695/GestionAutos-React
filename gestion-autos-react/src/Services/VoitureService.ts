@@ -1,14 +1,13 @@
-import AuthService from "./AuthService";
 
 //Toutes les fonctions de ce service respecte les normes REST
 export default class VoitureService {
 
     private lienAPI: string;
-    private authService: AuthService;
+    private getToken: () => Promise<string | null>
     //Passage du lien de l'API par défaut
-    constructor(lienAPI: string, authService: AuthService) {
+    constructor(lienAPI: string, getToken: () => Promise<string | null>) {
         this.lienAPI = lienAPI;
-        this.authService = authService;
+        this.getToken = getToken;
     }
 
     //Retourne une liste de toutes les voitures
@@ -17,7 +16,7 @@ export default class VoitureService {
             const response = await fetch(`${this.lienAPI}/Voitures/`,
                 {
                     headers: {
-                        "Authorization": `Bearer ${await this.authService.getToken()}`
+                        "Authorization": `Bearer ${await this.getToken()}`
                     }
                 }
             )
@@ -38,7 +37,7 @@ export default class VoitureService {
                 {
                     method: 'PUT',
                     headers: {
-                        "Authorization": `Bearer ${await this.authService.getToken()}`
+                        "Authorization": `Bearer ${await this.getToken()}`
                     }
                 })
             if (!response.ok)
@@ -61,7 +60,7 @@ export default class VoitureService {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${await this.authService.getToken()}`
+                        'Authorization': `Bearer ${await this.getToken()}`
                     },
                     body: JSON.stringify({
                         marque: marque,
@@ -92,7 +91,7 @@ export default class VoitureService {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${await this.authService.getToken()}`
+                        'Authorization': `Bearer ${await this.getToken()}`
                     },
                     body: JSON.stringify({
                         marque: marque,
@@ -123,7 +122,7 @@ export default class VoitureService {
                 {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': `Bearer ${await this.authService.getToken()}`
+                        'Authorization': `Bearer ${await this.getToken()}`
                     }
                 });
             if (!response.ok)

@@ -1,9 +1,9 @@
-export const Langue = {
-    FR: "fr",
-    EN: 'en',
-    ES: 'es'
+export enum Langue {
+    FR = "fr",
+    EN = 'en',
+    ES = 'es'
 }
 
-export const Pages = {
-    VOITURES: "voitures"
+export enum Pages {
+    VOITURES = "voitures"
 }

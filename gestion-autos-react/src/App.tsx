@@ -18,41 +18,39 @@ const App = () => {
   const password = import.meta.env.VITE_API_PASSWORD;
 
   //Langue par défaut = Français
-  const [lang, setLang] = useState(Langue.FR);
-  const [ressourcesService, setRessourcesServices] = useState(null);
-  const [authService, setAuthService] = useState(null);
+  const [lang, setLang] = useState<Langue>(Langue.FR);
+  const [authService] = useState<AuthService>(new AuthService(lienAPI, user, password));
+  const [ressourcesService, setRessourcesServices] = useState<RessourcesService | null>(null);
 
+  const GetToken = async (): Promise<string | null> => {
+    return await authService.getToken();
+  }
   useEffect(() => {
     const loadApp = async () => {
-      const authService = new AuthService(lienAPI, user, password);
       await authService.getToken();
-      setAuthService(authService);
 
-      const ressources = new RessourcesService(lienAPI, authService);
+      const ressources = new RessourcesService(lienAPI, GetToken);
       await ressources.fetchRessources();
       setRessourcesServices(ressources);
     }
     loadApp();
   }, []);
+;
 
-  const ChangerLangue = (nouvelleLangue) => {
+  const ChangerLangue = (nouvelleLangue: Langue): void => {
     setLang(nouvelleLangue);
   }
 
-  const GetToken = async () => {
-    return await authService.getToken();
-  }
-  const GetRessource = (ressource) => {
-    return ressourcesService.getRessource(lang, ressource);
+
+  const GetRessource = (ressource: string) : string => {
+    return ressourcesService!.getRessource(lang, ressource);
   }
 
   const pageVoitures = (
     <VoiturePage
-      authService={authService}
-      lang={lang}
+      GetToken={GetToken}
       GetRessource={GetRessource}
       lienAPI={lienAPI}
-      GetToken={GetToken}
     />
   );
 

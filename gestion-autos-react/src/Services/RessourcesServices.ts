@@ -1,15 +1,14 @@
 //Toutes les fonctions de ce service respecte les normes REST
 
-import AuthService from "./AuthService";
 
 export default class RessourcesService {
     private lienAPI: string;
-    private authService: AuthService;
+    private getToken: () => Promise<string | null>;
     private ressources: any = {};
     //Passage du lien de l'API par défaut
-    constructor(lienAPI: string, authService: AuthService) {
+    constructor(lienAPI: string, getToken: () => Promise<string | null>) {
         this.lienAPI = lienAPI;
-        this.authService = authService;
+        this.getToken = getToken;
     }
 
     //Récupére les ressources multilingues depuis l'API rest
@@ -18,7 +17,7 @@ export default class RessourcesService {
             const response = await fetch(`${this.lienAPI}/Ressources/`,
                 {
                     headers: {
-                        "Authorization": `Bearer ${await this.authService.getToken()}`
+                        "Authorization": `Bearer ${await this.getToken()!}`
                     }
                 }
             )

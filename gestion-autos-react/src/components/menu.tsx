@@ -2,7 +2,7 @@ import { Pages, Langue } from "../Constantes";
 import { Link } from "react-router-dom";
 
 interface MenuProps {
-    ChangerLangue: (nouvelleLangue: string) => string;
+    ChangerLangue: (nouvelleLangue: Langue) => void;
     lang: string;
     GetRessource: (ressource: string) => string;
 }

@@ -1,23 +1,22 @@
 import VoitureService from '../../Services/VoitureService'
 import VoitureCarte from './VoitureCarte';
 import { useEffect, useState } from "react";
-import AuthService from '../../Services/AuthService';
 import VoitureModalAjoutModification from './Modals/VoitureModalAjoutModification';
 
 interface VoiturePageProps {
-    authService: AuthService,
+    GetToken: () => Promise<string | null>,
     GetRessource: (ressource: string) => string,
     lienAPI: string
 }
 
-function VoiturePage({ authService, GetRessource, lienAPI }: VoiturePageProps) {
+function VoiturePage({ GetToken, GetRessource, lienAPI }: VoiturePageProps) {
     const [voitures, setVoitures] = useState<Voiture[]>([]);
     const [voitureService, setVoitureService] = useState<VoitureService | null>(null);
     const [showAjoutModification, setShowAjoutModification] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchData() {
-            const voitureService = new VoitureService(lienAPI, authService);
+            const voitureService = new VoitureService(lienAPI, GetToken);
             setVoitureService(voitureService);
             const data = await voitureService.getAll();
             setVoitures(data);
