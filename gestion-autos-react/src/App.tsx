@@ -60,7 +60,7 @@ const App = () => {
         <>
             <BrowserRouter>
                 <Menu ChangerLangue={ChangerLangue} lang={lang} GetRessource={GetRessource}/>
-                <h1 id={titrePage}>{GetRessource(titrePage)}</h1>
+                <h1 className="titre-principal" id={titrePage}>{GetRessource(titrePage)}</h1>
                 <Routes>
                     <Route path='/' element={pageVoitures}/>
                     <Route path='*' element={<Page404 GetRessource={GetRessource}/>}/>

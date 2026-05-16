@@ -74,7 +74,7 @@ function VoiturePage({ GetToken, GetRessource, lienAPI }: VoiturePageProps) {
 
     return voitureService && (
         <>
-            <h2 className="liste-voitures">{GetRessource('listeVoitures')}</h2>
+            <h2 className="titre-principal">{GetRessource('listeVoitures')}</h2>
             <div id="content" className='container-fluid'>
                 <div id="tiles-container" className='row'>
                     <div>
