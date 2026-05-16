@@ -1,117 +1,274 @@
 import { useEffect, useState } from "react";
 import { ajouterFonctionEscape } from "../../../Util";
+import { createPortal } from "react-dom";
 
 interface VoitureModalAjoutModificationProps {
     GetRessource: (key: string) => string;
     OnClose: () => void;
     Voiture?: Voiture | null;
-    AjoutVoiture?: (marque: string, modele: string, annee: number, couleur: string, actif: boolean) => Promise<boolean>;
-    ModificationVoiture?: (id: number, marque: string, modele: string, annee: number, couleur: string, actif: boolean) => Promise<boolean>;
 
+    AjoutVoiture?: (
+        marque: string,
+        modele: string,
+        annee: number,
+        couleur: string,
+        actif: boolean
+    ) => Promise<boolean>;
+
+    ModificationVoiture?: (
+        id: number,
+        marque: string,
+        modele: string,
+        annee: number,
+        couleur: string,
+        actif: boolean
+    ) => Promise<boolean>;
 }
 
-const VoitureModalAjoutModification = ({ GetRessource, OnClose, Voiture, AjoutVoiture, ModificationVoiture }: VoitureModalAjoutModificationProps) => {
-    const [marque, setMarque] = useState<string>('');
-    const [modele, setModele] = useState<string>('');
-    const [annee, setAnnee] = useState<number>(0);
-    const [couleur, setCouleur] = useState<string>('');
-    const [actif, setActif] = useState<boolean>(false);
+const VoitureModalAjoutModification = ({
+    GetRessource,
+    OnClose,
+    Voiture,
+    AjoutVoiture,
+    ModificationVoiture
+}: VoitureModalAjoutModificationProps) => {
 
+    const [marque, setMarque] = useState<string>(Voiture?.marque || '');
+    const [modele, setModele] = useState<string>(Voiture?.modele || '');
+    const [annee, setAnnee] = useState<number>(Voiture?.annee || 0);
+    const [couleur, setCouleur] = useState<string>(Voiture?.couleur || '');
+    const [actif, setActif] = useState<boolean>(Voiture?.actif || false);
+    const [show, setShow] = useState<boolean>(false);
+
+    // Fade IN Bootstrap
     useEffect(() => {
-        if (Voiture) {
-            setMarque(Voiture.marque || '');
-            setModele(Voiture.modele || '');
-            setAnnee(Voiture.annee || 0);
-            setCouleur(Voiture.couleur || '');
-            setActif(Voiture.actif || false);
-        }
-    }, [Voiture]);
+        requestAnimationFrame(() => {
+            setShow(true);
+        });
+    }, []);
 
+    // ESC clavier
     useEffect(() => {
-        ajouterFonctionEscape(OnClose);
-    }, [OnClose])
+        ajouterFonctionEscape(fermerModal);
+    }, []);
 
-    return (
-        <div id="modal-window-modification-voiture" className="modal fade show d-block" tabIndex={-1} aria-labelledby="modalLabel">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title modification-voiture" id="modalLabelModificationVoiture">
-                            {!Voiture ? GetRessource('ajoutVoiture') : GetRessource('modificationVoiture')}
-                        </h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={OnClose}></button>
-                    </div>
+    // Fade OUT Bootstrap
+    const fermerModal = () => {
+        setShow(false);
 
-                    <form
-                        id="updateVoitureForm"
-                        onSubmit={
-                            async (e) => {
-                                e.preventDefault();
-                                if (Voiture == null)
-                                    await AjoutVoiture(marque, modele, annee, couleur, actif);
-                                else
-                                    await ModificationVoiture(Voiture.id!, marque, modele, annee, couleur, actif)
-                                OnClose();
-                            }
-                        }
-                    >
-                        <div className="modal-body">
-                            <div className="mb-3">
-                                <label htmlFor="marqueVoitureInput" className="marque-voiture form-label">{GetRessource('marqueVoiture')}</label>
-                                <input type="text" className="form-control" id="marqueVoitureInput" required
-                                    placeholder={GetRessource('validationMarque')}
-                                    value={marque}
-                                    onChange={(e) => { setMarque(e.target.value) }}
-                                />
-                            </div>
+        setTimeout(() => {
+            OnClose();
+        }, 300);
+    };
 
-                            <div className="mb-3">
-                                <label htmlFor="modeleVoitureInput" className="modele-voiture form-label">{GetRessource('modeleVoiture')}</label>
-                                <input type="text" className="form-control" id="modeleVoitureInput" required
-                                    placeholder={GetRessource('validationModele')}
-                                    value={modele}
-                                    onChange={(e) => { setModele(e.target.value) }} />
-                            </div>
+    return createPortal(
+        <>
+            <div
+                id="modal-window-modification-voiture"
+                className={`modal fade ${show ? 'show' : ''} d-block`}
+                tabIndex={-1}
+                aria-modal="true"
+                role="dialog"
+            >
+                <div className="modal-dialog">
+                    <div className="modal-content">
 
-                            <div className="mb-3">
-                                <label htmlFor="anneeVoitureInput" className="annee-voiture form-label">{GetRessource('anneeVoiture')}</label>
-                                <input type="number" className="form-control" id="anneeVoitureInput" required
-                                    placeholder={GetRessource('validationAnnee')}
-                                    value={annee}
-                                    onChange={(e) => { setAnnee(Number(e.target.value)) }} />
-                            </div>
+                        <div className="modal-header">
+                            <h5
+                                className="modal-title modification-voiture"
+                            >
+                                {
+                                    !Voiture
+                                        ? GetRessource('ajoutVoiture')
+                                        : GetRessource('modificationVoiture')
+                                }
+                            </h5>
 
-                            <div className="mb-3">
-                                <label htmlFor="couleurVoitureInput" className="couleur-voiture form-label">{GetRessource('couleurVoiture')}</label>
-                                <input type="text" className="form-control" id="couleurVoitureInput" required
-                                    placeholder={GetRessource('validationCouleur')}
-                                    value={couleur}
-                                    onChange={(e) => { setCouleur(e.target.value) }} />
-                            </div>
-
-                            <div className="mb-3 form-check">
-                                <input type="checkbox" className="form-check-input" id="actifVoiture"
-                                    checked={actif}
-                                    onChange={(e) => { setActif(e.target.checked) }}
-                                />
-                                <label className="form-check-label" id="labelVoitureActive" htmlFor="actifVoiture">{GetRessource('voitureActive')}</label>
-                            </div>
-                        </div>
-
-                        <div className="modal-footer">
                             <button
-                                type="submit"
-                                id="boutonConfirmer"
-                                className="bouton-confirmer btn btn-primary"
-                            >{GetRessource('boutonConfirmer')}
-                            </button>
-                            <button type="button" className="bouton-annuler btn btn-secondary" data-bs-dismiss="modal" onClick={OnClose}>{GetRessource('boutonAnnuler')}</button>
+                                type="button"
+                                className="btn-close"
+                                onClick={fermerModal}
+                            ></button>
                         </div>
-                    </form>
+
+                        <form
+                            id="updateVoitureForm"
+                            onSubmit={async (e) => {
+                                e.preventDefault();
+
+                                if (Voiture == null) {
+
+                                    await AjoutVoiture?.(
+                                        marque,
+                                        modele,
+                                        annee,
+                                        couleur,
+                                        actif
+                                    );
+
+                                } else {
+
+                                    await ModificationVoiture?.(
+                                        Voiture.id!,
+                                        marque,
+                                        modele,
+                                        annee,
+                                        couleur,
+                                        actif
+                                    );
+                                }
+
+                                fermerModal();
+                            }}
+                        >
+
+                            <div className="modal-body">
+
+                                <div className="mb-3">
+
+                                    <label
+                                        htmlFor="marqueVoitureInput"
+                                        className="form-label"
+                                    >
+                                        {GetRessource('marqueVoiture')}
+                                    </label>
+
+                                    <input
+                                        id="marqueVoitureInput"
+                                        type="text"
+                                        className="form-control"
+                                        required
+                                        placeholder={GetRessource('validationMarque')}
+                                        value={marque}
+                                        onChange={(e) => {
+                                            setMarque(e.target.value);
+                                        }}
+                                    />
+
+                                </div>
+
+                                <div className="mb-3">
+
+                                    <label
+                                        htmlFor="modeleVoitureInput"
+                                        className="form-label"
+                                    >
+                                        {GetRessource('modeleVoiture')}
+                                    </label>
+
+                                    <input
+                                        id="modeleVoitureInput"
+                                        type="text"
+                                        className="form-control"
+                                        required
+                                        placeholder={GetRessource('validationModele')}
+                                        value={modele}
+                                        onChange={(e) => {
+                                            setModele(e.target.value);
+                                        }}
+                                    />
+
+                                </div>
+
+                                <div className="mb-3">
+
+                                    <label
+                                        htmlFor="anneeVoitureInput"
+                                        className="form-label"
+                                    >
+                                        {GetRessource('anneeVoiture')}
+                                    </label>
+
+                                    <input
+                                        id="anneeVoitureInput"
+                                        type="number"
+                                        className="form-control"
+                                        required
+                                        placeholder={GetRessource('validationAnnee')}
+                                        value={annee}
+                                        onChange={(e) => {
+                                            setAnnee(Number(e.target.value));
+                                        }}
+                                    />
+
+                                </div>
+
+                                <div className="mb-3">
+
+                                    <label
+                                        htmlFor="couleurVoitureInput"
+                                        className="form-label"
+                                    >
+                                        {GetRessource('couleurVoiture')}
+                                    </label>
+
+                                    <input
+                                        id="couleurVoitureInput"
+                                        type="text"
+                                        className="form-control"
+                                        required
+                                        placeholder={GetRessource('validationCouleur')}
+                                        value={couleur}
+                                        onChange={(e) => {
+                                            setCouleur(e.target.value);
+                                        }}
+                                    />
+
+                                </div>
+
+                                <div className="form-check">
+
+                                    <input
+                                        id="actifVoiture"
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        checked={actif}
+                                        onChange={(e) => {
+                                            setActif(e.target.checked);
+                                        }}
+                                    />
+
+                                    <label
+                                        htmlFor="actifVoiture"
+                                        className="form-check-label"
+                                    >
+                                        {GetRessource('voitureActive')}
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                            <div className="modal-footer">
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                >
+                                    {GetRessource('boutonConfirmer')}
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    onClick={fermerModal}
+                                >
+                                    {GetRessource('boutonAnnuler')}
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
                 </div>
             </div>
-        </div>
-    )
-}
+
+            {/* Backdrop Bootstrap */}
+            <div className={`modal-backdrop fade ${show ? 'show' : ''}`}></div>
+        </>,
+        document.body
+    );
+};
 
 export default VoitureModalAjoutModification;
