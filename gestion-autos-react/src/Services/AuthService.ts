@@ -36,8 +36,11 @@ export default class AuthService {
     async getToken() {
         let token = sessionStorage.getItem('token');
         if (token == null) {
-            const token = await this.fetchToken();
-            sessionStorage.setItem('token', token);
+            const newToken = await this.fetchToken();
+            if (newToken) {
+                sessionStorage.setItem('token', newToken);
+                token = newToken;
+            }
         }
         else {
             var payload = this.decodeToken(token);
@@ -46,20 +49,15 @@ export default class AuthService {
             var expDate = new Date(payload.exp * 1000);
 
             if (expDate < new Date()) {
-                let token = await this.fetchToken();
-                if (token != undefined)
-                    sessionStorage.setItem('token', token);
-                else
-                    alert("Impossible de se connecter");
-
-                var newToken = sessionStorage.getItem('token');
+                const newToken = await this.fetchToken();
                 if (newToken) {
-                    console.log(expDate);
+                    sessionStorage.setItem('token', newToken);
                     token = newToken;
-                    sessionStorage.setItem('token', token);
                 }
-                else
+                else {
+                    alert("Impossible de se connecter");
                     return null;
+                }
             }
         }
         return token;
