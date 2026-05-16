@@ -75,12 +75,15 @@ function VoiturePage({ GetToken, GetRessource, lienAPI }: VoiturePageProps) {
     return voitureService && (
         <>
             <h2 className="liste-voitures">{GetRessource('listeVoitures')}</h2>
-            <div id="content" className='container'>
+            <div id="content" className='container-fluid'>
                 <div id="tiles-container" className='row'>
-                    <button
-                        onClick={() => { setShowAjoutModification(true) }} >
-                        {GetRessource('ajoutVoiture')}
-                    </button>
+                    <div>
+                        <button
+                            className="w-100"
+                            onClick={() => { setShowAjoutModification(true) }} >
+                            {GetRessource('ajoutVoiture')}
+                        </button>
+                    </div>
                     {voitures.length > 0 ? voitures.map((v) => (
                         <VoitureCarte
                             key={v.id}
